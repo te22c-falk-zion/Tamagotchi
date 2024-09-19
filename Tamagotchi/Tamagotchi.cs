@@ -11,7 +11,9 @@ public class Tamagotchi
     private bool isAlive = true;
     public String name;
     public string toTeach;
-
+    public bool hyper = false;
+    public bool gamblePity = false;
+    public bool kibble = false;
     public Tamagotchi()
     {
         isAlive = true;
@@ -29,16 +31,12 @@ public class Tamagotchi
 
     public void Feed()
     {
-        if (currency >= 20)
+        if (kibble == true)
+        {hunger -= Random.Shared.Next(2,3);}
+        else{hunger -= Random.Shared.Next(2,5);}
+        if (hunger <= 0)
         {
-            Console.WriteLine("You bought food for 20 bucks");
-            currency = currency - 20;
-            Console.WriteLine($"{name} eats and hates you slightly less");
-            hunger -= Random.Shared.Next(2,5);
-            if (hunger <= 0)
-            {
-                hunger = 0;
-            }
+            hunger = 0;
         }
     }
 
@@ -72,14 +70,30 @@ public class Tamagotchi
         }
         Console.WriteLine($"{name} scratched {scratches} times");
         slotsCount = 0;
-        if (scratches >= 10)
+        if (gamblePity == false)
         {
-            bet = bet * ((scratches/10) + 0.4f);
-            currency = currency + bet;
-            Console.WriteLine ($"{name} won {bet} bucks!");
-            Console.WriteLine($"{name} now has {currency}");
-            scratches = 0;
+            if (scratches >= 10)
+            {
+                bet = bet * ((scratches/10) + 0.4f);
+                currency = currency + bet;
+                Console.WriteLine ($"{name} won {bet} bucks!");
+                Console.WriteLine($"{name} now has {currency}");
+                scratches = 0;
+            }
         }
+        else if  (gamblePity == true)
+        {
+            Console.WriteLine ("Coward");
+            if (scratches >= 1)
+            {
+                bet = bet * ((scratches/10) + 123f);
+                currency = currency + bet;
+                Console.WriteLine ($"OMGGGG {name} WON A TAMAGAJILLION BUCKSSS!!!");
+                Console.WriteLine($"{name} now has {currency}");
+                scratches = 0;
+            }   
+        }
+
         else if (scratches < 10)
         {
             Console.WriteLine ($"{name} has lost!");
@@ -88,14 +102,25 @@ public class Tamagotchi
         }
     }
 
-    public void List()
+    public void store()
     {
-
+        Console.Clear();
+        Console.WriteLine("Welcome to the store!!\n=========================");
+        Console.WriteLine("1.[I suck at gamlbing] - 1 buck");
+        Console.WriteLine("2.[High quality Kibble] - 200 bucks");
+        Console.WriteLine("3.[Drugs] - 300");
+        string toBuy = Console.ReadLine();
+        if (toBuy == "1" && currency >= 1) 
+        {gamblePity = true;
+        currency -= 1;}
+        if (toBuy == "2" && currency >= 300) 
+        {kibble = true;
+        currency -= 300;}
+        if (toBuy == "3" && currency >= 300) 
+        {hyper = true;
+        currency -= 300;}
+        Console.WriteLine("Thank you for your patronage!");
     }
-    public void makeTamagotchi()
-    {
-
-    }    
     public void death()
     {
         isAlive = false;
@@ -116,8 +141,8 @@ public class Tamagotchi
 
     public void tick()
     {
-        hunger ++;
-        boredom ++;
+        hunger += 2;
+        boredom += 2;
         if (boredom > 90 || hunger > 90)
         {
             isAlive = false;
@@ -138,7 +163,9 @@ public class Tamagotchi
 
     private void boredomReduce()
     {
-        boredom -= Random.Shared.Next(2,5);
+        if (hyper == true)
+        {boredom -= Random.Shared.Next(5,10);}
+        else{boredom -= Random.Shared.Next(3,5);}
         if (boredom <= 0)
         {
             boredom = 0;
